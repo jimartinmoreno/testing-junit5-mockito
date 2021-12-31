@@ -18,6 +18,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -46,6 +47,9 @@ class VisitControllerTest {
         petService.save(pet);
         petService.save(pet3);
 
+        /**
+         * En el caso de usar @Spy no es necesario ni given(BDD) ni when (Mockito)
+         */
         //given(petService.findById(anyLong())).willCallRealMethod(); //.willReturn(pet);
 
         //when
@@ -55,7 +59,11 @@ class VisitControllerTest {
         assertThat(visit).isNotNull();
         assertThat(visit.getPet()).isNotNull();
         assertThat(visit.getPet().getId()).isEqualTo(12L);
+
+        //Mockito
         verify(petService, times(1)).findById(anyLong());
+        //BDD
+        then(petService).should(times(1)).findById(anyLong());
     }
 
     @Test
@@ -68,7 +76,7 @@ class VisitControllerTest {
         petService.save(pet);
         petService.save(pet3);
 
-        // Reemplazamos el resultado real con uno que le indicamos nosotros
+        // Reemplazamos el resultado real con uno que le indicamos nosotros usando BDD
         given(petService.findById(anyLong())).willReturn(pet3);
 
         //when
@@ -78,7 +86,9 @@ class VisitControllerTest {
         assertThat(visit).isNotNull();
         assertThat(visit.getPet()).isNotNull();
         assertThat(visit.getPet().getId()).isEqualTo(3L);
+        //Mockito
         verify(petService, times(1)).findById(anyLong());
+        //BDD
+        then(petService).should(times(1)).findById(anyLong());
     }
-
 }

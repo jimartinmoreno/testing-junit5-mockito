@@ -15,6 +15,10 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Sin MOckito hay que preparar todo en el setup @BeforeEach
+ */
+
 class VetControllerTest implements ControllerTests {
 
     VetService vetService;
@@ -26,7 +30,6 @@ class VetControllerTest implements ControllerTests {
     void setUp() {
         specialtyService = new SpecialityMapService();
         vetService = new VetMapService(specialtyService);
-
         vetController = new VetController(vetService);
 
         Vet vet1 = new Vet(1L, "joe", "buck", null);
@@ -38,14 +41,10 @@ class VetControllerTest implements ControllerTests {
 
     @Test
     void listVets() {
-        Model model = new ModelMapImpl();
-
+        ModelMapImpl model = new ModelMapImpl();
         String view = vetController.listVets(model);
-
         assertThat("vets/index").isEqualTo(view);
-
-        Set modelAttribute = (Set) ((ModelMapImpl) model).getMap().get("vets");
-
+        Set modelAttribute = (Set) model.getMap().get("vets");
         assertThat(modelAttribute.size()).isEqualTo(2);
     }
 }
